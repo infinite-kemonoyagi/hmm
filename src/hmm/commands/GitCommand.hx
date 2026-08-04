@@ -26,28 +26,27 @@ class GitCommand implements ICommand {
     Shell.ensureHmmJsonExists();
     Shell.createLocalHaxelibRepoIfNotExists();
 
-    if (args.length < 2 || args.length > 4) {
+    if (args.length < 2 || args.length > 5) {
       throw new ValidationError('$type command requires 2, 3, or 4 arguments (<name> <url> [ref] [dir])', 1);
     }
 
     var name:String = args[0];
     var url:String = args[1];
+    var skipDependencies : Option<Bool> = None;
     var ref:Option<String> = Some(DEFAULT_REF);
     var dir:Option<String> = None;
 
-    if (args.length >= 3) {
-      ref = Options.ofValue(args[2]).filter(a -> a.trim() != "");
-    }
+    skipDependencies = Options.ofValue(args.contains("--skip-dependencies"));
 
-    if (args.length == 4) {
+    if (args.length >= 4) {
       dir = Options.ofValue(args[3]).filter(a -> a.trim() != "");
     }
 
     // Add the library to the hmm.json
-    HmmConfigs.addDependencyOrThrow(Git(name, url, ref, dir));
+    HmmConfigs.addDependencyOrThrow(Git(name, url, skipDependencies, ref, dir));
 
     // Install the library
-    Shell.haxelibGit(name, url, ref, dir, {log: true, throwError: true});
+    Shell.haxelibGit(name, url, skipDependencies, ref, dir, {log: true, throwError: true});
 
     // Show the resulting haxelib list
     Shell.haxelibList({log: true, throwError: true});

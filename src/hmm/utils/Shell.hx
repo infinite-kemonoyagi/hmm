@@ -78,8 +78,9 @@ class Shell {
     return haxelib(["deleterepo"], options);
   }
 
-  public static function haxelibInstall(name : String, version : Option<String>, options: ShellOptions) : Void {
-    var args = ["install", name].concat(version.toArray());
+  public static function haxelibInstall(name : String, version : Option<String>, skipDependencies : Option<Bool>,
+    options: ShellOptions) : Void {
+    var args = ["install", name, skipDependencies.get() ? "--skip-dependencies" : ""].concat(version.toArray());
     return haxelib(args, options);
   }
 
@@ -93,18 +94,21 @@ class Shell {
     return haxelib(args, options);
   }
 
-  public static function haxelibGit(name : String, url : String, ref : Option<String>, dir : Option<String>, options: ShellOptions) : Void {
-    var args = ["git", name, url].concat(ref.toArray()).concat(dir.toArray());
+  public static function haxelibGit(name : String, url : String, skipDependencies : Option<Bool>,
+    ref : Option<String>, dir : Option<String>, options: ShellOptions) : Void {
+    var args = ["git", name, url, skipDependencies.get() ? "--skip-dependencies" : ""].concat(ref.toArray()).concat(dir.toArray());
     return haxelib(args, options);
   }
 
-  public static function haxelibHg(name : String, url : String, ref : Option<String>, dir : Option<String>, options: ShellOptions) : Void {
-    var args = ["hg", name, url].concat(ref.toArray()).concat(dir.toArray());
+  public static function haxelibHg(name : String, url : String, skipDependencies : Option<Bool>,
+    ref : Option<String>, dir : Option<String>, options: ShellOptions) : Void {
+    var args = ["hg", name, url, skipDependencies.get() ? "--skip-dependencies" : ""].concat(ref.toArray()).concat(dir.toArray());
     haxelib(args, options);
   }
 
-  public static function haxelibDev(name : String, path : String, options: ShellOptions) : Void {
-    var args = ["dev", name, path];
+  public static function haxelibDev(name : String, path : String, skipDependencies : Option<Bool>,
+    options: ShellOptions) : Void {
+    var args = ["dev", name, path, skipDependencies.get() ? "--skip-dependencies" : ""];
     return haxelib(args, options);
   }
 
@@ -152,10 +156,10 @@ class Shell {
 
   public static function isAlreadyInstalled(library : LibraryConfig, options: ShellOptions) : Bool {
     return switch library {
-      case Haxelib(name, version) : isAlreadyInstalledHaxelib(name, version, options);
-      case Git(name, url, ref, dir) : isAlreadyInstalledGit(name, url, ref, dir, options);
-      case Mercurial(name, url, ref, dir) : isAlreadyInstalledMercurial(name, url, ref, dir, options);
-      case Dev(name, path) : isAlreadyInstalledDev(name, path, options);
+      case Haxelib(name, version, skipDependencies) : isAlreadyInstalledHaxelib(name, version, options);
+      case Git(name, url, skipDependencies, ref, dir) : isAlreadyInstalledGit(name, url, ref, dir, options);
+      case Mercurial(name, url, skipDependencies, ref, dir) : isAlreadyInstalledMercurial(name, url, ref, dir, options);
+      case Dev(name, path, skipDependencies) : isAlreadyInstalledDev(name, path, options);
     };
   }
 

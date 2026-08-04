@@ -4,6 +4,9 @@ node_modules
 # Haxe
 .haxelib
 
+# Neko
+dump/
+
 # Project files
 bin/
 hmm.zip

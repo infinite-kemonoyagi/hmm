@@ -40,10 +40,10 @@ class LockVersionCommand implements ICommand {
     for (library in libs) {
       checks++;
       if (switch library {
-        case Haxelib(name, version) : lockHaxelibVersion(name, version);
-        case Git(name, url, ref, dir) : lockGitVersion(name, url, ref, dir, longId);
-        case Mercurial(name, url, ref, dir) : lockHgVersion(name, url, ref, dir);
-        case Dev(name, path) : false;
+        case Haxelib(name, version, skipDependencies) : lockHaxelibVersion(name, version, skipDependencies);
+        case Git(name, url, skipDependencies, ref, dir) : lockGitVersion(name, url, skipDependencies, ref, dir, longId);
+        case Mercurial(name, url, skipDependencies, ref, dir) : lockHgVersion(name, url, skipDependencies, ref, dir);
+        case Dev(name, path, skipDependencies) : false;
       }) successes.push(library);
     }
 
@@ -78,7 +78,7 @@ class LockVersionCommand implements ICommand {
 ';
   }
 
-  function lockHgVersion(name : String, url : String, ref : Option<String>, dir : Option<String>) {
+  function lockHgVersion(name : String, url : String, skipDependencies : Option<Bool>, ref : Option<String>, dir : Option<String>) {
     if (!FileSystem.exists('.haxelib/$name/hg/.hg')) throw new ValidationError('Library $name is not checked out', 1);
 
     var newRef = getHgRef(name);
@@ -88,7 +88,7 @@ class LockVersionCommand implements ICommand {
       case Some(currentRef): currentRef != newRef;
     }) {
       Log.info('Lock $name to ref "${newRef}"');
-      HmmConfigs.addDependencyOrThrow(Git(name, url, Some(newRef), dir), true);
+      HmmConfigs.addDependencyOrThrow(Git(name, url, skipDependencies, Some(newRef), dir), true);
       return true;
     }
     return false;
@@ -108,7 +108,7 @@ class LockVersionCommand implements ICommand {
     return newRef;
   }
 
-  function lockGitVersion(name : String, url : String, ref : Option<String>, dir : Option<String>, longId : Bool) {
+  function lockGitVersion(name : String, url : String, skipDependencies : Option<Bool>,  ref : Option<String>, dir : Option<String>, longId : Bool) {
     if (!FileSystem.exists('.haxelib/$name/git/.git')) throw new ValidationError('Library $name is not checked out', 1);
 
     var newRef = getGitRef(name, longId);
@@ -118,7 +118,7 @@ class LockVersionCommand implements ICommand {
       case Some(currentRef): currentRef != newRef;
     }) {
       Log.info('Lock $name to ref "${newRef}"');
-      HmmConfigs.addDependencyOrThrow(Git(name, url, Some(newRef), dir), true);
+      HmmConfigs.addDependencyOrThrow(Git(name, url, skipDependencies, Some(newRef), dir), true);
       return true;
     }
     return false;
@@ -146,7 +146,7 @@ class LockVersionCommand implements ICommand {
     return newRef;
   }
 
-  function lockHaxelibVersion(name : String, version: Option<String>) {
+  function lockHaxelibVersion(name : String, version: Option<String>, skipDependencies : Option<Bool>) {
       var result = Shell.haxelibPath(name, { log: false, throwError: false });
       if (!result.isInstalled) throw new ValidationError('Library $name is not installed', 1);
       var newVersion = result.version;
@@ -156,7 +156,7 @@ class LockVersionCommand implements ICommand {
         case Some(currentVersion): currentVersion != newVersion;
       }) {
         Log.info('Lock $name to version ${newVersion}');
-        HmmConfigs.addDependencyOrThrow(Haxelib(name, Some(newVersion)), true);
+        HmmConfigs.addDependencyOrThrow(Haxelib(name, Some(newVersion), skipDependencies), true);
         return true;
       }
       return false;

@@ -28,7 +28,7 @@ class FromHxmlCommand implements ICommand {
     for (path in args) {
       var libs = readLibsFromHxml(path);
       for (lib in libs) {
-        HmmConfigs.addDependency(Haxelib(lib.name, lib.version));
+        HmmConfigs.addDependency(Haxelib(lib.name, lib.version, None));
       }
     }
   }

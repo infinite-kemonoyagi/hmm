@@ -15,8 +15,8 @@ class ToHxmlCommand implements ICommand {
     var config = HmmConfigs.readHmmJsonOrThrow();
     for (lib in config.dependencies) {
       var str = switch lib {
-        case Haxelib(name, Some(version)): '${name}:${version}';
-        case Haxelib(name, None) : '${name}';
+        case Haxelib(name, Some(version), _): '${name}:${version}';
+        case Haxelib(name, None, _) : '${name}';
         case Git(name, _, _, _) : '${name}'; // can't provide version info for git dep
         case Mercurial(name, _, _, _) : '${name}'; // can't provide version info for mercurial dep
         case Dev(name, _) : '${name}';

@@ -24,19 +24,22 @@ class HaxelibCommand implements ICommand {
     Shell.ensureHmmJsonExists();
     Shell.createLocalHaxelibRepoIfNotExists();
 
-    if (args.length < 1 || args.length > 2) {
+    if (args.length < 1 || args.length > 3) {
       throw new ValidationError('$type command requires 1 or 2 arguments (<name> [version])', 1);
     }
 
     var name:String = args[0];
     var version:Option<String> = None;
+    var skipDependencies:Option<Bool> = None;
 
-    if (args.length == 2) {
+    if (args.length >= 2 && args[1] != "--skip-dependencies") {
       version = Options.ofValue(args[1]).filter(a -> a.trim() != "");
     }
 
-    HmmConfigs.addDependencyOrThrow(Haxelib(name, version));
-    Shell.haxelibInstall(name, version, {log: true, throwError: true});
+    skipDependencies = Options.ofValue(args.contains("--skip-dependencies"));
+
+    HmmConfigs.addDependencyOrThrow(Haxelib(name, version, skipDependencies));
+    Shell.haxelibInstall(name, version, skipDependencies, {log: true, throwError: true});
     Shell.haxelibList({log: true, throwError: true});
   }
 

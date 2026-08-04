@@ -24,10 +24,10 @@ class InstallCommand implements ICommand {
 
   function install(library : LibraryConfig) {
     return switch library {
-      case Haxelib(name, version): Shell.haxelibInstall(name, version, { log: true, throwError: true });
-      case Git(name, url, ref, dir): Shell.haxelibGit(name, url, ref, dir, { log: true, throwError: true });
-      case Mercurial(name, url, ref, dir): Shell.haxelibHg(name, url, ref, dir, { log: true, throwError: true });
-      case Dev(name, path) : Shell.haxelibDev(name, path, { log: true, throwError: true });
+      case Haxelib(name, version, skipDependencies): Shell.haxelibInstall(name, version, skipDependencies, { log: true, throwError: true });
+      case Git(name, url, skipDependencies, ref, dir): Shell.haxelibGit(name, url, skipDependencies, ref, dir, { log: true, throwError: true });
+      case Mercurial(name, url, skipDependencies, ref, dir): Shell.haxelibHg(name, url, skipDependencies, ref, dir, { log: true, throwError: true });
+      case Dev(name, path, skipDependencies) : Shell.haxelibDev(name, path, skipDependencies, { log: true, throwError: true });
     };
   }
 

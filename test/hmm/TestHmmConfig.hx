@@ -74,15 +74,15 @@ class TestHmmConfig {
     //trace(actual);
     var expected = Right({
       dependencies: [
-        Haxelib("lib1", None),
-        Haxelib("lib2", None),
-        Haxelib("lib3", None),
-        Haxelib("lib4", Some("1.0.0")),
-        Git("lib5", "url5", None, None),
-        Git("lib6", "url6", Some("ref6"), None),
-        Git("lib7", "url7", Some("ref7"), Some("dir7")),
-        Git("lib8", "url8", None, None),
-        Git("lib9", "url9", None, None),
+        Haxelib("lib1", None, None),
+        Haxelib("lib2", None, None),
+        Haxelib("lib3", None, None),
+        Haxelib("lib4", Some("1.0.0"), None),
+        Git("lib5", "url5", None, None, None),
+        Git("lib6", "url6", None, Some("ref6"), None),
+        Git("lib7", "url7", None, Some("ref7"), Some("dir7")),
+        Git("lib8", "url8", None, None, None),
+        Git("lib9", "url9", None, None, None),
       ]
     });
     Assert.same(expected, actual);

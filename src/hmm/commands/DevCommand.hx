@@ -31,12 +31,15 @@ class DevCommand implements ICommand {
 
     var name : String = args[0];
     var path : String = args[1];
+    var skipDependencies : Option<Bool> = None;
+
+    skipDependencies = Options.ofValue(args.contains("--skip-dependencies"));
 
     // Add the library to the hmm.json
-    HmmConfigs.addDependencyOrThrow(Dev(name, path));
+    HmmConfigs.addDependencyOrThrow(Dev(name, path, skipDependencies));
 
     // Install the library
-    Shell.haxelibDev(name, path, { log: true, throwError: true });
+    Shell.haxelibDev(name, path, skipDependencies, { log: true, throwError: true });
 
     // Show the resulting haxelib list
     Shell.haxelibList({ log: true, throwError: true });
