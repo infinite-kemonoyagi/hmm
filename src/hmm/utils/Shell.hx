@@ -80,7 +80,8 @@ class Shell {
 
   public static function haxelibInstall(name : String, version : Option<String>, skipDependencies : Option<Bool>,
     options: ShellOptions) : Void {
-    var args = ["install", name, skipDependencies.get() ? "--skip-dependencies" : ""].concat(version.toArray());
+    var args = ["install", name].concat(version.toArray());
+    if (skipDependencies.get()) args.push("--skip-dependencies");
     return haxelib(args, options);
   }
 
@@ -96,19 +97,22 @@ class Shell {
 
   public static function haxelibGit(name : String, url : String, skipDependencies : Option<Bool>,
     ref : Option<String>, dir : Option<String>, options: ShellOptions) : Void {
-    var args = ["git", name, url, skipDependencies.get() ? "--skip-dependencies" : ""].concat(ref.toArray()).concat(dir.toArray());
+    var args = ["git", name, url].concat(ref.toArray()).concat(dir.toArray());
+    if (skipDependencies.get()) args.push("--skip-dependencies");
     return haxelib(args, options);
   }
 
   public static function haxelibHg(name : String, url : String, skipDependencies : Option<Bool>,
     ref : Option<String>, dir : Option<String>, options: ShellOptions) : Void {
-    var args = ["hg", name, url, skipDependencies.get() ? "--skip-dependencies" : ""].concat(ref.toArray()).concat(dir.toArray());
+    var args = ["hg", name, url].concat(ref.toArray()).concat(dir.toArray());
+    if (skipDependencies.get()) args.push("--skip-dependencies");
     haxelib(args, options);
   }
 
   public static function haxelibDev(name : String, path : String, skipDependencies : Option<Bool>,
     options: ShellOptions) : Void {
-    var args = ["dev", name, path, skipDependencies.get() ? "--skip-dependencies" : ""];
+    var args = ["dev", name, path];
+    if (skipDependencies.get()) args.push("--skip-dependencies");
     return haxelib(args, options);
   }
 
